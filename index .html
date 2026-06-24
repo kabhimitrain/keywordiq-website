@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KeywordIQ — International Keyword Intelligence Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #1D9E75;
+    --green-dark: #0F6E56;
+    --green-xdark: #085041;
+    --green-light: #E1F5EE;
+    --green-mid: #9FE1CB;
+    --red: #E24B4A;
+    --red-light: #FCEBEB;
+    --red-mid: #F7C1C1;
+    --red-dark: #A32D2D;
+    --gray-100: #F1F3F5;
+    --gray-200: #E9ECEF;
+    --gray-300: #DEE2E6;
+    --gray-400: #CED4DA;
+    --gray-500: #ADB5BD;
+    --gray-600: #6C757D;
+    --gray-700: #495057;
+    --gray-800: #343A40;
+    --gray-900: #212529;
+    --bg: #FFFFFF;
+    --surface: #F8F9FA;
+    --border: #E9ECEF;
+    --text: #212529;
+    --text-muted: #6C757D;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.04);
+    /* safe area for notch/home-bar on iOS */
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* reserve space for sticky bottom CTA on mobile */
+    padding-bottom: calc(72px + var(--safe-bottom));
+  }
+  @media (min-width: 768px) { body { padding-bottom: 0; } }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1rem;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  @media (min-width: 480px) { nav { padding: 0 1.25rem; height: 56px; } }
+  @media (min-width: 768px) { nav { padding: 0 2rem; height: 60px; } }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    text-decoration: none;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .nav-logo {
+    width: 28px; height: 28px;
+    background: var(--green);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  @media (min-width: 768px) { .nav-logo { width: 32px; height: 32px; } }
+  .nav-logo svg { width: 14px; height: 14px; fill: none; stroke: white; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  @media (min-width: 768px) { .nav-logo svg { width: 18px; height: 18px; } }
+
+  .nav-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+  }
+  @media (min-width: 768px) { .nav-name { font-size: 18px; } }
+  .nav-name span { color: var(--green); }
+
+  .nav-pill {
+    font-size: 9px;
+    font-weight: 600;
+    background: var(--green-light);
+    color: var(--green-dark);
+    padding: 2px 7px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  @media (min-width: 768px) { .nav-pill { font-size: 11px; padding: 3px 9px; } }
+
+  .nav-right {
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: none;
+  }
+  @media (min-width: 520px) { .nav-right { display: block; font-size: 12px; } }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(160deg, #f0faf6 0%, #ffffff 50%, #fff8f0 100%);
+    padding: 2.5rem 1rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  @media (min-width: 480px) { .hero { padding: 3.5rem 1.25rem 3rem; } }
+  @media (min-width: 768px) { .hero { padding: 5rem 2rem 4rem; } }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; left: 50%; transform: translateX(-50%);
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(29,158,117,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--green-dark);
+    background: var(--green-light);
+    border: 1px solid var(--green-mid);
+    padding: 4px 11px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  @media (min-width: 480px) { .hero-eyebrow { font-size: 11px; padding: 4px 12px; margin-bottom: 1.25rem; } }
+  .hero-eyebrow svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.6rem, 7vw, 3.2rem);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    max-width: 720px;
+    margin: 0 auto 0.875rem;
+  }
+  .hero h1 .accent { color: var(--green); }
+
+  .hero p {
+    font-size: clamp(13.5px, 3.5vw, 17px);
+    color: var(--text-muted);
+    max-width: 520px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.7;
+    padding: 0 0.25rem;
+  }
+  @media (min-width: 480px) { .hero p { margin-bottom: 2rem; } }
+
+  .hero-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  @media (min-width: 480px) { .hero-stats { gap: 1.5rem; } }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--green); display: block; }
+  @media (min-width: 480px) { .stat-num { font-size: 1.4rem; } }
+  .stat-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.3px; }
+  @media (min-width: 480px) { .stat-label { font-size: 11px; } }
+  .stat-div { width: 1px; height: 28px; background: var(--border); }
+  @media (max-width: 360px) { .stat-div { display: none; } .hero-stats { gap: 0.875rem; } }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.25rem 1rem 2rem;
+  }
+  @media (min-width: 480px) { main { padding: 1.75rem 1.25rem 3rem; } }
+  @media (min-width: 768px) { main { padding: 3rem 2rem 5rem; } }
+
+  /* ── STICKY BOTTOM CTA (mobile only) ── */
+  .mobile-cta-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 90;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    padding: 10px 1rem calc(10px + var(--safe-bottom));
+    display: block;
+  }
+  @media (min-width: 768px) { .mobile-cta-bar { display: none; } }
+
+  .mobile-cta-bar .btn-primary {
+    margin-top: 0;
+    padding: 13px 20px;
+    font-size: 15px;
+  }
+
+  /* ── TOOL CARD ── */
+  .tool-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+
+  .tool-card-header {
+    background: var(--surface);
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  @media (min-width: 600px) {
+    .tool-card-header { padding: 1.25rem 1.75rem; align-items: center; }
+  }
+
+  .tool-card-header h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  @media (min-width: 600px) { .tool-card-header h2 { font-size: 15px; } }
+
+  .tool-card-header p { font-size: 12px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+
+  .step-dot {
+    width: 26px; height: 26px;
+    background: var(--green);
+    color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  @media (min-width: 600px) { .step-dot { width: 28px; height: 28px; font-size: 12px; margin-top: 0; } }
+
+  .tool-body { padding: 1.25rem; }
+  @media (min-width: 600px) { .tool-body { padding: 1.75rem; } }
+
+  /* ── FORM ── */
+  /* Mobile: all single column */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 0;
+  }
+
+  /* Tablet+: 2-column */
+  @media (min-width: 600px) {
+    .form-grid { grid-template-columns: 1fr 1fr; margin-bottom: 1rem; }
+    .form-group.full { grid-column: 1 / -1; }
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+
+  .form-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray-700);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .form-label svg { width: 13px; height: 13px; fill: none; stroke: var(--green); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .form-label .opt { font-weight: 400; color: var(--gray-500); font-size: 11px; }
+
+  .form-input, .form-textarea, .form-select {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px; /* 16px prevents iOS zoom */
+    color: var(--text);
+    background: var(--bg);
+    border: 1.5px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    padding: 11px 13px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /* Shrink font back on desktop since zoom not a concern */
+  @media (min-width: 768px) {
+    .form-input, .form-textarea, .form-select { font-size: 14px; padding: 10px 12px; }
+  }
+
+  .form-textarea { resize: vertical; min-height: 160px; line-height: 1.6; }
+  @media (min-width: 480px) { .form-textarea { min-height: 190px; } }
+  @media (min-width: 600px) { .form-textarea { min-height: 220px; } }
+
+  .form-input:focus, .form-textarea:focus, .form-select:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(29,158,117,0.12);
+  }
+  .form-input::placeholder, .form-textarea::placeholder { color: var(--gray-400); }
+
+  .form-select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236C757D' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+  }
+
+  .form-hint { font-size: 11.5px; color: var(--gray-500); margin-top: 1px; line-height: 1.4; }
+
+  /* ── CONTEXT BANNER ── */
+  .context-banner {
+    display: none;
+    align-items: flex-start;
+    gap: 8px;
+    background: #EFF8FF;
+    border: 1px solid #BEE3F8;
+    border-radius: var(--radius-md);
+    padding: 10px 13px;
+    font-size: 12.5px;
+    color: #1A6494;
+    line-height: 1.5;
+    margin-top: 0.25rem;
+  }
+  .context-banner.show { display: flex; }
+  .context-banner svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; margin-top: 2px; }
+  .context-banner strong { font-weight: 600; }
+
+  /* ── PRIMARY BUTTON ── */
+  .btn-primary {
+    width: 100%;
+    padding: 15px 20px;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+    box-shadow: 0 2px 8px rgba(29,158,117,0.25);
+    margin-top: 1.25rem;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 52px; /* large tap target */
+  }
+  .btn-primary:hover { background: var(--green-dark); box-shadow: 0 4px 16px rgba(29,158,117,0.35); }
+  @media (hover: hover) { .btn-primary:hover { transform: translateY(-1px); } }
+  .btn-primary:active { transform: translateY(0); background: var(--green-dark); }
+  .btn-primary:disabled { background: var(--gray-300); color: var(--gray-500); cursor: not-allowed; box-shadow: none; transform: none; }
+  .btn-primary svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  /* In-card button: hidden on mobile (sticky bar used instead), visible on desktop */
+  #analyzeBtn { display: none; }
+  @media (min-width: 768px) { #analyzeBtn { display: flex; } }
+
+  /* ── LOADER ── */
+  .loader {
+    display: none;
+    background: var(--green-light);
+    border: 1px solid var(--green-mid);
+    border-radius: var(--radius-md);
+    padding: 13px 16px;
+    margin-top: 1rem;
+    align-items: center;
+    gap: 10px;
+    font-size: 13.5px;
+    color: var(--green-dark);
+    font-weight: 500;
+  }
+  .loader.show { display: flex; }
+
+  .spinner {
+    width: 17px; height: 17px;
+    border: 2.5px solid var(--green-mid);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loader-dots::after { content: ''; animation: dots 1.4s infinite; }
+  @keyframes dots {
+    0%  { content: ''; }
+    25% { content: '.'; }
+    50% { content: '..'; }
+    75% { content: '...'; }
+  }
+
+  /* ── ERROR ── */
+  .error-box {
+    display: none;
+    background: #FFF5F5;
+    border: 1px solid var(--red-mid);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    margin-top: 1rem;
+    font-size: 13px;
+    color: var(--red-dark);
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.5;
+  }
+  .error-box.show { display: flex; }
+  .error-box svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── RESULTS ── */
+  .results-section { display: none; margin-top: 1.75rem; }
+  .results-section.show { display: block; }
+
+  .results-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .results-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  @media (min-width: 600px) { .results-title { font-size: 18px; } }
+
+  /* On mobile, actions go full width below title */
+  .results-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  @media (min-width: 600px) { .results-actions { width: auto; gap: 8px; } }
+
+  .btn-sm {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.12s;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    flex: 1 1 auto;
+    justify-content: center;
+    white-space: nowrap;
+    min-height: 44px; /* 44px Apple HIG minimum tap size */
+  }
+  @media (min-width: 600px) { .btn-sm { flex: none; padding: 8px 14px; font-size: 13px; min-height: auto; } }
+  .btn-sm svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  .btn-outline { background: var(--bg); border: 1px solid var(--border); color: var(--gray-700); }
+  .btn-outline:hover { background: var(--surface); border-color: var(--gray-400); }
+  .btn-green { background: var(--green); border: 1px solid var(--green); color: white; }
+  .btn-green:hover { background: var(--green-dark); }
+
+  /* ── META CHIPS ── */
+  .meta-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1rem; }
+
+  .meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    color: var(--gray-600);
+    background: var(--gray-100);
+    border: 1px solid var(--gray-200);
+    border-radius: 20px;
+    padding: 3px 9px;
+    max-width: 280px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  @media (min-width: 600px) { .meta-chip { font-size: 12px; padding: 4px 10px; max-width: 340px; } }
+  .meta-chip svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  /* ── RESULTS GRID ── */
+  /* Mobile: stacked */
+  .results-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+  /* Tablet+: side by side */
+  @media (min-width: 600px) { .results-grid { grid-template-columns: 1fr 1fr; } }
+
+  .kw-card {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+
+  .kw-card-head {
+    padding: 11px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  @media (min-width: 600px) { .kw-card-head { padding: 12px 16px; } }
+
+  .kw-card-head.pos { background: #F0FAF6; }
+  .kw-card-head.neg { background: #FFF5F5; }
+
+  .kw-card-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  @media (min-width: 600px) { .kw-card-label { font-size: 14px; } }
+  .kw-card-label.pos { color: var(--green-xdark); }
+  .kw-card-label.neg { color: var(--red-dark); }
+  .kw-card-label svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .kw-count {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+  .kw-count.pos { background: var(--green-mid); color: #04342C; }
+  .kw-count.neg { background: var(--red-mid); color: #501313; }
+
+  .kw-card-head-right { display: flex; align-items: center; gap: 6px; }
+
+  .btn-copy-card {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 9px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    border: 1px solid;
+    transition: all 0.12s;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-copy-card svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .btn-copy-card.pos { color: var(--green-dark); border-color: var(--green-mid); }
+  .btn-copy-card.pos:hover { background: var(--green-light); }
+  .btn-copy-card.neg { color: var(--red-dark); border-color: var(--red-mid); }
+  .btn-copy-card.neg:hover { background: var(--red-light); }
+
+  /* On mobile, keyword list is scrollable but not too short */
+  .kw-list {
+    list-style: none;
+    padding: 8px 10px;
+    max-height: 240px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  @media (min-width: 480px) { .kw-list { max-height: 280px; } }
+  @media (min-width: 600px) { .kw-list { padding: 10px 12px; max-height: 340px; gap: 4px; } }
+
+  .kw-list::-webkit-scrollbar { width: 4px; }
+  .kw-list::-webkit-scrollbar-track { background: transparent; }
+  .kw-list::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 2px; }
+
+  .kw-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12.5px;
+    padding: 7px 9px;
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    transition: background 0.1s;
+    line-height: 1.4;
+  }
+  @media (min-width: 600px) { .kw-item { font-size: 13px; padding: 7px 10px; gap: 8px; } }
+  .kw-item svg { width: 13px; height: 13px; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .kw-item.pos svg { stroke: var(--green); }
+  .kw-item.neg svg { stroke: var(--red); }
+
+  /* ── REASONING ── */
+  .reasoning-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 0.875rem 1rem;
+    margin-top: 1rem;
+    font-size: 13px;
+    color: var(--gray-700);
+    line-height: 1.7;
+  }
+  @media (min-width: 600px) { .reasoning-card { padding: 1rem 1.25rem; font-size: 13.5px; } }
+  .reasoning-card strong { color: var(--text); font-weight: 600; }
+
+  /* ── HOW IT WORKS ── */
+  .how-section { margin-top: 3rem; padding-top: 3rem; border-top: 1px solid var(--border); }
+  @media (min-width: 600px) { .how-section { margin-top: 4rem; padding-top: 4rem; } }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 0.6rem;
+  }
+
+  .section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.25rem, 4vw, 1.6rem);
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.4px;
+    margin-bottom: 0.6rem;
+    line-height: 1.25;
+  }
+
+  .section-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 2rem; max-width: 540px; line-height: 1.6; }
+  @media (min-width: 600px) { .section-sub { font-size: 15px; margin-bottom: 2.5rem; } }
+
+  /* Mobile: 1 col steps, tablet: 2 col, desktop: 4 col */
+  .steps {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  @media (min-width: 480px) { .steps { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 768px) { .steps { grid-template-columns: repeat(4, 1fr); } }
+
+  .step-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.1rem;
+    box-shadow: var(--shadow-sm);
+  }
+  @media (min-width: 600px) { .step-card { padding: 1.25rem; } }
+
+  .step-icon {
+    width: 38px; height: 38px;
+    background: var(--green-light);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 0.75rem;
+    flex-shrink: 0;
+  }
+  @media (min-width: 600px) { .step-icon { width: 40px; height: 40px; } }
+  .step-icon svg { width: 18px; height: 18px; fill: none; stroke: var(--green); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .step-card h3 { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .step-card p { font-size: 12.5px; color: var(--text-muted); line-height: 1.55; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1.25rem 1.25rem;
+    text-align: center;
+    font-size: 12px;
+    color: var(--gray-500);
+    line-height: 1.6;
+    /* footer sits above sticky bar on mobile */
+    margin-bottom: 0;
+  }
+  @media (min-width: 768px) { footer { padding: 1.5rem 2rem; } }
+  footer a { color: var(--green); text-decoration: none; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 1.25rem; right: 1.25rem;
+    background: var(--text);
+    color: white;
+    padding: 10px 16px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.25s;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    max-width: calc(100vw - 2.5rem);
+  }
+  @media (min-width: 600px) { .toast { bottom: 2rem; right: 2rem; } }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast svg { width: 14px; height: 14px; fill: none; stroke: #9FE1CB; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-brand">
+    <div class="nav-logo">
+      <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+    </div>
+    <span class="nav-name">Keyword<span>IQ</span></span>
+    <span class="nav-pill">AI-Powered</span>
+  </a>
+  <div class="nav-right">International Keyword Classifier</div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+    Global PPC Intelligence
+  </div>
+  <h1>Stop guessing.<br/><span class="accent">Know your keywords.</span></h1>
+  <p>Paste a client website, select their country, and drop in raw search terms — AI understands local intent anywhere in the world.</p>
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-num">10s</span>
+      <span class="stat-label">vs 2 hrs manual</span>
+    </div>
+    <div class="stat-div"></div>
+    <div class="stat">
+      <span class="stat-num">🌍</span>
+      <span class="stat-label">100+ countries</span>
+    </div>
+    <div class="stat-div"></div>
+    <div class="stat">
+      <span class="stat-num">CSV</span>
+      <span class="stat-label">ready for Google Ads</span>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="tool-card">
+    <div class="tool-card-header">
+      <div class="step-dot">1</div>
+      <div>
+        <h2>Enter client details &amp; search terms</h2>
+        <p>Fill in the website, select country, specify target city/area, and paste search terms from Google Ads</p>
+      </div>
+    </div>
+    <div class="tool-body">
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label class="form-label" for="url">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            Client website URL
+          </label>
+          <input class="form-input" type="url" id="url" placeholder="https://example.com" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+          <p class="form-hint">AI reads what they sell from this URL</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="country">
+            <svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+            Country / Market
+          </label>
+          <select class="form-select" id="country" onchange="onCountryChange()">
+            <option value="">— Select country —</option>
+            <optgroup label="🌏 Asia Pacific">
+              <option value="AU">🇦🇺 Australia</option>
+              <option value="NZ">🇳🇿 New Zealand</option>
+              <option value="IN">🇮🇳 India</option>
+              <option value="SG">🇸🇬 Singapore</option>
+              <option value="MY">🇲🇾 Malaysia</option>
+              <option value="PH">🇵🇭 Philippines</option>
+              <option value="ID">🇮🇩 Indonesia</option>
+              <option value="TH">🇹🇭 Thailand</option>
+              <option value="VN">🇻🇳 Vietnam</option>
+              <option value="JP">🇯🇵 Japan</option>
+              <option value="KR">🇰🇷 South Korea</option>
+              <option value="CN">🇨🇳 China</option>
+              <option value="HK">🇭🇰 Hong Kong</option>
+              <option value="TW">🇹🇼 Taiwan</option>
+              <option value="PK">🇵🇰 Pakistan</option>
+              <option value="BD">🇧🇩 Bangladesh</option>
+              <option value="LK">🇱🇰 Sri Lanka</option>
+            </optgroup>
+            <optgroup label="🌍 Middle East &amp; Africa">
+              <option value="AE">🇦🇪 UAE</option>
+              <option value="SA">🇸🇦 Saudi Arabia</option>
+              <option value="QA">🇶🇦 Qatar</option>
+              <option value="KW">🇰🇼 Kuwait</option>
+              <option value="BH">🇧🇭 Bahrain</option>
+              <option value="OM">🇴🇲 Oman</option>
+              <option value="JO">🇯🇴 Jordan</option>
+              <option value="EG">🇪🇬 Egypt</option>
+              <option value="ZA">🇿🇦 South Africa</option>
+              <option value="NG">🇳🇬 Nigeria</option>
+              <option value="KE">🇰🇪 Kenya</option>
+              <option value="GH">🇬🇭 Ghana</option>
+            </optgroup>
+            <optgroup label="🌍 Europe">
+              <option value="GB">🇬🇧 United Kingdom</option>
+              <option value="DE">🇩🇪 Germany</option>
+              <option value="FR">🇫🇷 France</option>
+              <option value="ES">🇪🇸 Spain</option>
+              <option value="IT">🇮🇹 Italy</option>
+              <option value="NL">🇳🇱 Netherlands</option>
+              <option value="BE">🇧🇪 Belgium</option>
+              <option value="CH">🇨🇭 Switzerland</option>
+              <option value="AT">🇦🇹 Austria</option>
+              <option value="SE">🇸🇪 Sweden</option>
+              <option value="NO">🇳🇴 Norway</option>
+              <option value="DK">🇩🇰 Denmark</option>
+              <option value="FI">🇫🇮 Finland</option>
+              <option value="PL">🇵🇱 Poland</option>
+              <option value="PT">🇵🇹 Portugal</option>
+              <option value="IE">🇮🇪 Ireland</option>
+              <option value="GR">🇬🇷 Greece</option>
+            </optgroup>
+            <optgroup label="🌎 Americas">
+              <option value="US">🇺🇸 United States</option>
+              <option value="CA">🇨🇦 Canada</option>
+              <option value="MX">🇲🇽 Mexico</option>
+              <option value="BR">🇧🇷 Brazil</option>
+              <option value="AR">🇦🇷 Argentina</option>
+              <option value="CO">🇨🇴 Colombia</option>
+              <option value="CL">🇨🇱 Chile</option>
+              <option value="PE">🇵🇪 Peru</option>
+            </optgroup>
+          </select>
+          <p class="form-hint">Sets currency, language &amp; market context for AI</p>
+        </div>
+
+        <div class="form-group full">
+          <label class="form-label" for="location">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            Target city / area
+            <span class="opt">(optional)</span>
+          </label>
+          <input class="form-input" type="text" id="location" placeholder="e.g. Toronto, Dubai Marina, London Zone 1" autocomplete="off" />
+          <p class="form-hint">Specific city, suburb, or district the client wants to reach</p>
+        </div>
+
+        <div class="form-group full">
+          <div class="context-banner" id="contextBanner">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span id="contextBannerText"></span>
+          </div>
+        </div>
+
+        <div class="form-group full">
+          <label class="form-label" for="terms">
+            <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            Search terms from Google Ads
+          </label>
+          <textarea class="form-textarea" id="terms"
+            placeholder="Paste search terms here — one per line, e.g.:
+
+emergency plumber Toronto
+plumber near me
+how to fix a leaky faucet
+plumbing jobs Toronto hiring
+toilet installation Toronto
+drain cleaning service GTA"></textarea>
+          <p class="form-hint">Paste as many as you have — AI will classify every single one</p>
+        </div>
+
+      </div>
+
+      <button class="btn-primary" id="analyzeBtn" onclick="analyze()">
+        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Analyze Keywords
+      </button>
+
+      <div class="loader" id="loader">
+        <div class="spinner"></div>
+        <span>Analyzing business context and local search intent<span class="loader-dots"></span></span>
+      </div>
+
+      <div class="error-box" id="errorBox">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="errorText">Something went wrong.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-section" id="results">
+    <div class="results-header">
+      <h2 class="results-title">Keyword classification results</h2>
+      <div class="results-actions">
+        <button class="btn-sm btn-outline" id="copyPosBtn" onclick="copyPos()">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy positives
+        </button>
+        <button class="btn-sm btn-outline" id="copyBtn" onclick="copyNeg()">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy negatives
+        </button>
+        <button class="btn-sm btn-green" onclick="downloadCSV()">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download CSV
+        </button>
+      </div>
+    </div>
+
+    <div class="meta-chips" id="metaChips"></div>
+
+    <div class="results-grid">
+      <div class="kw-card">
+        <div class="kw-card-head pos">
+          <span class="kw-card-label pos">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Positive keywords
+          </span>
+          <div class="kw-card-head-right">
+            <span class="kw-count pos" id="posCount">0</span>
+            <button class="btn-copy-card pos" id="copyPosCardBtn" onclick="copyPos(this)">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+        </div>
+        <ul class="kw-list" id="posList"></ul>
+      </div>
+
+      <div class="kw-card">
+        <div class="kw-card-head neg">
+          <span class="kw-card-label neg">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Negative keywords
+          </span>
+          <div class="kw-card-head-right">
+            <span class="kw-count neg" id="negCount">0</span>
+            <button class="btn-copy-card neg" id="copyNegCardBtn" onclick="copyNeg(this)">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+        </div>
+        <ul class="kw-list" id="negList"></ul>
+      </div>
+    </div>
+
+    <div class="reasoning-card" id="reasoningCard"></div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="how-section">
+    <p class="section-label">How it works</p>
+    <h2 class="section-title">From search terms to campaign-ready lists in seconds</h2>
+    <p class="section-sub">No spreadsheets, no manual filtering. AI reads the business context, country market, and local intent to make accurate decisions at scale.</p>
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <h3>1. Read the business</h3>
+        <p>AI identifies what the company sells and their target customers from the website URL.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        </div>
+        <h3>2. Apply market context</h3>
+        <p>Country, currency, language, and local geographic signals are matched against your target area.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <h3>3. Classify every term</h3>
+        <p>DIY searches, job seekers, competitors, wrong categories — all flagged as negative automatically.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <h3>4. Export to Google Ads</h3>
+        <p>Download the CSV and paste straight into your Google Ads negative keyword list.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>KeywordIQ &mdash; AI-powered international keyword intelligence for Google Ads specialists &nbsp;|&nbsp; Powered by <a href="https://anthropic.com" target="_blank">Claude AI</a></p>
+</footer>
+
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastText">Copied!</span>
+</div>
+
+<!-- Sticky bottom CTA — mobile only -->
+<div class="mobile-cta-bar" id="mobileCtaBar">
+  <button class="btn-primary" id="analyzeBtnMobile" onclick="analyze()">
+    <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    Analyze Keywords
+  </button>
+</div>
+
+<script>
+  let lastResult = null;
+
+  const COUNTRY_MAP = {
+    'AU': { name: 'Australia', currency: 'AUD', currencySymbol: 'A$', languages: ['English'], searchBehavior: 'Australians often search with suburb or postcode. Common local terms: "near me", state abbreviations (NSW, VIC, QLD, WA, SA). GST is 10%.' },
+    'NZ': { name: 'New Zealand', currency: 'NZD', currencySymbol: 'NZ$', languages: ['English'], searchBehavior: 'NZ searchers use city names (Auckland, Wellington, Christchurch). Common: "near me", region names. GST 15%.' },
+    'IN': { name: 'India', currency: 'INR', currencySymbol: '₹', languages: ['English', 'Hindi'], searchBehavior: 'Indian searchers often mix English and Hindi (Hinglish). City + area is common (e.g. "Mumbai Andheri"). Terms like "best", "cheap", "near me" are high intent. GST applies.' },
+    'SG': { name: 'Singapore', currency: 'SGD', currencySymbol: 'S$', languages: ['English', 'Mandarin', 'Malay', 'Tamil'], searchBehavior: 'Singapore is city-state so hyper-local: MRT station names, HDB estates, shopping malls. GST 9%.' },
+    'MY': { name: 'Malaysia', currency: 'MYR', currencySymbol: 'RM', languages: ['English', 'Bahasa Melayu'], searchBehavior: 'Malaysian searches mix English and Bahasa Melayu. State names (Selangor, KL, Penang, Johor) are local signals. SST applies.' },
+    'PH': { name: 'Philippines', currency: 'PHP', currencySymbol: '₱', languages: ['English', 'Filipino'], searchBehavior: 'Philippines searchers mix English and Filipino/Tagalog. Metro Manila is the dominant market. VAT 12%.' },
+    'ID': { name: 'Indonesia', currency: 'IDR', currencySymbol: 'Rp', languages: ['Indonesian'], searchBehavior: 'Indonesian searches are mainly in Bahasa Indonesia. Jakarta, Surabaya, Bandung are major markets. PPN 11%.' },
+    'TH': { name: 'Thailand', currency: 'THB', currencySymbol: '฿', languages: ['Thai'], searchBehavior: 'Thai searches are primarily in Thai script. Bangkok districts (Sukhumvit, Silom) are key local signals. VAT 7%.' },
+    'VN': { name: 'Vietnam', currency: 'VND', currencySymbol: '₫', languages: ['Vietnamese'], searchBehavior: 'Vietnamese searches in Vietnamese. Ho Chi Minh City and Hanoi are dominant. District numbers are hyper-local signals. VAT 10%.' },
+    'JP': { name: 'Japan', currency: 'JPY', currencySymbol: '¥', languages: ['Japanese'], searchBehavior: 'Japanese searches in Japanese (kanji/hiragana/katakana). Prefecture + city is standard local. Consumption tax 10%.' },
+    'KR': { name: 'South Korea', currency: 'KRW', currencySymbol: '₩', languages: ['Korean'], searchBehavior: 'Korean searches in Korean (Hangul). Seoul districts (강남, 홍대) are key signals. VAT 10%.' },
+    'CN': { name: 'China', currency: 'CNY', currencySymbol: '¥', languages: ['Chinese (Simplified)'], searchBehavior: 'Mainland China uses Simplified Chinese. Note: Google Ads has limited reach in China. Province + city signals. VAT 13%.' },
+    'HK': { name: 'Hong Kong', currency: 'HKD', currencySymbol: 'HK$', languages: ['English', 'Chinese (Traditional)'], searchBehavior: 'Hong Kong searches in both English and Traditional Chinese. District names (Central, Wan Chai, Mong Kok) are key signals. No GST/VAT.' },
+    'TW': { name: 'Taiwan', currency: 'TWD', currencySymbol: 'NT$', languages: ['Chinese (Traditional)'], searchBehavior: 'Taiwan searches in Traditional Chinese. Taipei is dominant market. VAT 5%.' },
+    'PK': { name: 'Pakistan', currency: 'PKR', currencySymbol: 'Rs', languages: ['English', 'Urdu'], searchBehavior: 'Pakistani searches mix English and Urdu. Karachi, Lahore, Islamabad are key markets.' },
+    'BD': { name: 'Bangladesh', currency: 'BDT', currencySymbol: '৳', languages: ['Bengali'], searchBehavior: 'Bangladesh searches primarily in Bengali. Dhaka is dominant. Area names (Gulshan, Dhanmondi) are local signals.' },
+    'LK': { name: 'Sri Lanka', currency: 'LKR', currencySymbol: 'Rs', languages: ['English', 'Sinhala', 'Tamil'], searchBehavior: 'Sri Lanka searches mix English, Sinhala and Tamil. Colombo districts are key local signals.' },
+    'AE': { name: 'UAE', currency: 'AED', currencySymbol: 'AED', languages: ['English', 'Arabic'], searchBehavior: 'UAE searchers use English and Arabic. Dubai districts (Marina, Downtown, JBR, Business Bay) and Abu Dhabi areas are strong local signals. VAT 5%. Very high purchasing power.' },
+    'SA': { name: 'Saudi Arabia', currency: 'SAR', currencySymbol: 'SAR', languages: ['Arabic'], searchBehavior: 'Saudi Arabia searches primarily in Arabic. Riyadh, Jeddah, Dammam are major markets. Seasonal peaks around Ramadan. VAT 15%.' },
+    'QA': { name: 'Qatar', currency: 'QAR', currencySymbol: 'QAR', languages: ['English', 'Arabic'], searchBehavior: 'Qatar searches in English and Arabic. Doha is the primary market. West Bay, Al Waab, Lusail are key areas.' },
+    'KW': { name: 'Kuwait', currency: 'KWD', currencySymbol: 'KWD', languages: ['Arabic'], searchBehavior: 'Kuwait searches in Arabic. Kuwait City and surrounding areas. Very high purchasing power.' },
+    'BH': { name: 'Bahrain', currency: 'BHD', currencySymbol: 'BHD', languages: ['Arabic'], searchBehavior: 'Bahrain searches in Arabic and English. Manama is the main market.' },
+    'OM': { name: 'Oman', currency: 'OMR', currencySymbol: 'OMR', languages: ['Arabic'], searchBehavior: 'Oman searches in Arabic. Muscat is the main market.' },
+    'JO': { name: 'Jordan', currency: 'JOD', currencySymbol: 'JOD', languages: ['Arabic'], searchBehavior: 'Jordan searches in Arabic. Amman is dominant.' },
+    'EG': { name: 'Egypt', currency: 'EGP', currencySymbol: 'E£', languages: ['Arabic'], searchBehavior: 'Egypt searches in Arabic (Egyptian dialect). Cairo and Alexandria are major markets. VAT 14%.' },
+    'ZA': { name: 'South Africa', currency: 'ZAR', currencySymbol: 'R', languages: ['English', 'Afrikaans', 'Zulu'], searchBehavior: 'South Africa searches mainly in English. Cape Town, Johannesburg, Durban are major markets. VAT 15%.' },
+    'NG': { name: 'Nigeria', currency: 'NGN', currencySymbol: '₦', languages: ['English'], searchBehavior: 'Nigeria searches in English. Lagos and Abuja are dominant. Area names (VI, Lekki, Ikeja in Lagos) are key signals.' },
+    'KE': { name: 'Kenya', currency: 'KES', currencySymbol: 'KSh', languages: ['English', 'Swahili'], searchBehavior: 'Kenya searches in English and Swahili. Nairobi is dominant.' },
+    'GH': { name: 'Ghana', currency: 'GHS', currencySymbol: 'GH₵', languages: ['English'], searchBehavior: 'Ghana searches in English. Accra and Kumasi are major markets.' },
+    'GB': { name: 'United Kingdom', currency: 'GBP', currencySymbol: '£', languages: ['English'], searchBehavior: 'UK searchers use British English spelling (colour, centre, tyre). Postcodes and borough/county names are strong local signals. VAT 20%.' },
+    'DE': { name: 'Germany', currency: 'EUR', currencySymbol: '€', languages: ['German'], searchBehavior: 'Germany searches in German. City + Stadtteil (district) is standard local. MwSt (VAT) 19%.' },
+    'FR': { name: 'France', currency: 'EUR', currencySymbol: '€', languages: ['French'], searchBehavior: 'France searches in French. Paris arrondissements are hyper-local. TVA 20%.' },
+    'ES': { name: 'Spain', currency: 'EUR', currencySymbol: '€', languages: ['Spanish'], searchBehavior: 'Spain searches in Spanish. City + barrio is local signal. IVA 21%.' },
+    'IT': { name: 'Italy', currency: 'EUR', currencySymbol: '€', languages: ['Italian'], searchBehavior: 'Italy searches in Italian. City + quartiere/zona is local. IVA 22%.' },
+    'NL': { name: 'Netherlands', currency: 'EUR', currencySymbol: '€', languages: ['Dutch'], searchBehavior: 'Netherlands searches in Dutch. Amsterdam, Rotterdam, The Hague are major markets. BTW 21%.' },
+    'BE': { name: 'Belgium', currency: 'EUR', currencySymbol: '€', languages: ['French', 'Dutch'], searchBehavior: 'Belgium splits by language: French (Wallonia, Brussels) and Dutch/Flemish (Flanders). BTW/TVA 21%.' },
+    'CH': { name: 'Switzerland', currency: 'CHF', currencySymbol: 'CHF', languages: ['German', 'French', 'Italian'], searchBehavior: 'Switzerland has 3 language regions. Very high purchasing power. Zurich, Geneva, Basel are key markets.' },
+    'AT': { name: 'Austria', currency: 'EUR', currencySymbol: '€', languages: ['German'], searchBehavior: 'Austria searches in German (Austrian dialect). Vienna is dominant.' },
+    'SE': { name: 'Sweden', currency: 'SEK', currencySymbol: 'kr', languages: ['Swedish'], searchBehavior: 'Sweden searches in Swedish. Stockholm, Gothenburg, Malmö are major.' },
+    'NO': { name: 'Norway', currency: 'NOK', currencySymbol: 'kr', languages: ['Norwegian'], searchBehavior: 'Norway searches in Norwegian. Oslo is dominant. High purchasing power.' },
+    'DK': { name: 'Denmark', currency: 'DKK', currencySymbol: 'kr', languages: ['Danish'], searchBehavior: 'Denmark searches in Danish. Copenhagen is dominant.' },
+    'FI': { name: 'Finland', currency: 'EUR', currencySymbol: '€', languages: ['Finnish', 'Swedish'], searchBehavior: 'Finland searches in Finnish. Helsinki is dominant.' },
+    'PL': { name: 'Poland', currency: 'PLN', currencySymbol: 'zł', languages: ['Polish'], searchBehavior: 'Poland searches in Polish. Warsaw, Krakow, Wroclaw are major markets.' },
+    'PT': { name: 'Portugal', currency: 'EUR', currencySymbol: '€', languages: ['Portuguese'], searchBehavior: 'Portugal searches in Portuguese. Lisbon and Porto are major.' },
+    'IE': { name: 'Ireland', currency: 'EUR', currencySymbol: '€', languages: ['English'], searchBehavior: 'Ireland searches in English. Dublin is dominant. County names are local signals.' },
+    'GR': { name: 'Greece', currency: 'EUR', currencySymbol: '€', languages: ['Greek'], searchBehavior: 'Greece searches in Greek. Athens is dominant.' },
+    'US': { name: 'United States', currency: 'USD', currencySymbol: '$', languages: ['English'], searchBehavior: 'US searchers use American English. State abbreviations (NY, CA, TX, FL) and ZIP codes are strong local signals. "Near me" is extremely high intent. Sales tax varies by state.' },
+    'CA': { name: 'Canada', currency: 'CAD', currencySymbol: 'CA$', languages: ['English', 'French'], searchBehavior: 'Canada splits English and French (Quebec). Province abbreviations (ON, BC, AB, QC) are local signals. "Near me" common. GTA (Greater Toronto Area), Lower Mainland BC, Greater Vancouver are key regional signals. GST/HST/PST vary by province.' },
+    'MX': { name: 'Mexico', currency: 'MXN', currencySymbol: '$', languages: ['Spanish'], searchBehavior: 'Mexico searches in Spanish. CDMX, Guadalajara, Monterrey are major markets. IVA 16%.' },
+    'BR': { name: 'Brazil', currency: 'BRL', currencySymbol: 'R$', languages: ['Portuguese (Brazilian)'], searchBehavior: 'Brazil searches in Brazilian Portuguese. São Paulo, Rio de Janeiro, Brasília are major.' },
+    'AR': { name: 'Argentina', currency: 'ARS', currencySymbol: '$', languages: ['Spanish'], searchBehavior: 'Argentina searches in Spanish. Buenos Aires is dominant. IVA 21%.' },
+    'CO': { name: 'Colombia', currency: 'COP', currencySymbol: '$', languages: ['Spanish'], searchBehavior: 'Colombia searches in Spanish. Bogotá, Medellín, Cali are major. IVA 19%.' },
+    'CL': { name: 'Chile', currency: 'CLP', currencySymbol: '$', languages: ['Spanish'], searchBehavior: 'Chile searches in Spanish. Santiago is dominant. IVA 19%.' },
+    'PE': { name: 'Peru', currency: 'PEN', currencySymbol: 'S/', languages: ['Spanish'], searchBehavior: 'Peru searches in Spanish. Lima is dominant. IGV 18%.' },
+  };
+
+  function onCountryChange() {
+    const code = document.getElementById('country').value;
+    const banner = document.getElementById('contextBanner');
+    const bannerText = document.getElementById('contextBannerText');
+    if (!code) { banner.classList.remove('show'); return; }
+    const c = COUNTRY_MAP[code];
+    if (c) {
+      bannerText.innerHTML = `<strong>${c.name} market loaded:</strong> Currency ${c.currency} (${c.currencySymbol}) · Languages: ${c.languages.join(', ')} · AI will apply local search behaviour for this market.`;
+      banner.classList.add('show');
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastText').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  function showError(msg) {
+    const e = document.getElementById('errorBox');
+    document.getElementById('errorText').textContent = msg;
+    e.classList.add('show');
+  }
+
+  function hideError() { document.getElementById('errorBox').classList.remove('show'); }
+
+  async function analyze() {
+    const url = document.getElementById('url').value.trim();
+    const location = document.getElementById('location').value.trim();
+    const rawTerms = document.getElementById('terms').value.trim();
+    const countryCode = document.getElementById('country').value;
+
+    hideError();
+
+    if (!url) { showError('Please enter the client\'s website URL.'); return; }
+    if (!rawTerms) { showError('Please paste at least a few search terms — one per line.'); return; }
+
+    const terms = rawTerms.split('\n').map(t => t.trim()).filter(Boolean);
+    if (terms.length < 2) { showError('Please enter at least 2 search terms.'); return; }
+
+    let countryContext = '';
+    let countryName = '';
+    if (countryCode) {
+      const c = COUNTRY_MAP[countryCode];
+      if (c) {
+        countryName = c.name;
+        countryContext = `\nTARGET MARKET: ${c.name}\nCurrency: ${c.currency} (${c.currencySymbol})\nPrimary languages: ${c.languages.join(', ')}\nLocal search behaviour: ${c.searchBehavior}`;
+      }
+    }
+
+    const locationNote = location ? ` The target geographic area within this market is: "${location}".` : '';
+
+    document.getElementById('analyzeBtn').disabled = true;
+    const mb = document.getElementById('analyzeBtnMobile');
+    if (mb) mb.disabled = true;
+    document.getElementById('loader').classList.add('show');
+    document.getElementById('results').classList.remove('show');
+
+    const prompt = `You are a senior Google Ads and PPC specialist with 10+ years of international experience.
+
+A digital marketing manager needs you to classify search terms for a client.
+
+Client website: ${url}${locationNote}
+${countryContext}
+
+Using the website domain/URL to infer the business type, product category, and target audience — AND using the country market context above — classify each of the following ${terms.length} search terms into POSITIVE or NEGATIVE for a Google Ads Search campaign.
+
+POSITIVE = High commercial intent, directly relevant to this business and market, what a real local customer in ${countryName || 'the target market'} would type to find/hire/buy from this company.
+
+NEGATIVE = Terms to add as negative keywords. Block: DIY/how-to/free guides, job seekers (jobs, hiring, salary, career, vacancy), competitors in other areas, wrong product categories, wholesale/bulk, purely informational, geographic terms outside the target market.
+
+IMPORTANT: Apply ${countryName || 'the target'} market-specific knowledge. Consider local search language patterns, regional terms, and how customers in this market phrase buying intent.
+
+Search terms to classify:
+${terms.map((t, i) => `${i + 1}. ${t}`).join('\n')}
+
+Respond ONLY with valid JSON. No text before or after. No markdown. No backticks.
+{
+  "businessProfile": "One clear sentence describing this business type and what they sell",
+  "positive": ["term1", "term2"],
+  "negative": ["term3", "term4"],
+  "reasoning": "2-3 sentences explaining your classification logic, any market-specific signals you used, and key decisions made"
+}`;
+
+    try {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+      });
+
+      if (!resp.ok) throw new Error(`API error: ${resp.status}`);
+      const data = await resp.json();
+      const raw = data.content?.find(b => b.type === 'text')?.text || '';
+      const clean = raw.replace(/```json|```/g, '').trim();
+      const result = JSON.parse(clean);
+      lastResult = { result, url, location, countryName, countryCode, totalTerms: terms.length };
+      renderResults(result, url, location, countryName, terms.length);
+
+    } catch (err) {
+      document.getElementById('loader').classList.remove('show');
+      document.getElementById('analyzeBtn').disabled = false;
+      const mb2 = document.getElementById('analyzeBtnMobile');
+      if (mb2) mb2.disabled = false;
+      showError('Analysis failed. Please check your connection and try again. (' + err.message + ')');
+    }
+  }
+
+  function renderResults(r, url, location, countryName, total) {
+    document.getElementById('loader').classList.remove('show');
+    document.getElementById('analyzeBtn').disabled = false;
+    const mbr = document.getElementById('analyzeBtnMobile');
+    if (mbr) mbr.disabled = false;
+
+    const pos = r.positive || [];
+    const neg = r.negative || [];
+
+    document.getElementById('posCount').textContent = pos.length;
+    document.getElementById('negCount').textContent = neg.length;
+
+    const posList = document.getElementById('posList');
+    const negList = document.getElementById('negList');
+    posList.innerHTML = '';
+    negList.innerHTML = '';
+
+    pos.forEach(kw => {
+      const li = document.createElement('li');
+      li.className = 'kw-item pos';
+      li.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>${kw}`;
+      posList.appendChild(li);
+    });
+
+    neg.forEach(kw => {
+      const li = document.createElement('li');
+      li.className = 'kw-item neg';
+      li.innerHTML = `<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>${kw}`;
+      negList.appendChild(li);
+    });
+
+    const chips = document.getElementById('metaChips');
+    chips.innerHTML = '';
+
+    const chipData = [
+      { icon: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`, text: tryHostname(url) },
+      countryName ? { icon: `<svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>`, text: countryName } : null,
+      location ? { icon: `<svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>`, text: location } : null,
+      { icon: `<svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>`, text: `${total} terms analyzed` },
+      r.businessProfile ? { icon: `<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`, text: r.businessProfile } : null,
+    ].filter(Boolean);
+
+    chipData.forEach(c => {
+      const d = document.createElement('div');
+      d.className = 'meta-chip';
+      d.innerHTML = `${c.icon}${c.text}`;
+      chips.appendChild(d);
+    });
+
+    document.getElementById('reasoningCard').innerHTML = `<strong>AI classification logic:</strong> ${r.reasoning || ''}`;
+    document.getElementById('results').classList.add('show');
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function tryHostname(url) {
+    try { return new URL(url.startsWith('http') ? url : 'https://' + url).hostname; } catch { return url; }
+  }
+
+  function doCopy(text, msg, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast(msg); if (btn) flashBtn(btn);
+    }).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      showToast(msg); if (btn) flashBtn(btn);
+    });
+  }
+
+  function flashBtn(btn) {
+    const orig = btn.innerHTML;
+    btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+    btn.disabled = true;
+    setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 2000);
+  }
+
+  function copyPos(btn) {
+    if (!lastResult) return;
+    doCopy((lastResult.result.positive || []).join('\n'), 'Positive keywords copied!', btn || document.getElementById('copyPosBtn'));
+  }
+
+  function copyNeg(btn) {
+    if (!lastResult) return;
+    doCopy((lastResult.result.negative || []).join('\n'), 'Negative keywords copied!', btn || document.getElementById('copyBtn'));
+  }
+
+  function downloadCSV() {
+    if (!lastResult) return;
+    const neg = (lastResult.result.negative || []).join('\n');
+    const pos = (lastResult.result.positive || []).join('\n');
+    const market = lastResult.countryName ? `Market: ${lastResult.countryName}\n` : '';
+    const loc = lastResult.location ? `Location: ${lastResult.location}\n` : '';
+    const csv = `${market}${loc}Website: ${lastResult.url}\n\nNegative Keywords\n${neg}\n\nPositive Keywords\n${pos}`;
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'keyword_classification.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    showToast('CSV downloaded!');
+  }
+</script>
+</body>
+</html>
